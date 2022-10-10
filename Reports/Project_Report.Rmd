@@ -18,6 +18,8 @@ library("gtsummary")
 Read in data:
 ```{r, message=FALSE}
 df <- read_csv("../DataRaw/lead-iq-01.csv")
+# change IQ value of 999 to 99
+df["IQ"][df["IQ"] == 999] <- 99
 ```
 
 IQ levels by location status:
