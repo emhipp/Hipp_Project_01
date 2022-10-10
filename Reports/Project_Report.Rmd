@@ -1,0 +1,56 @@
+---
+title: "Project Report"
+author: "Emily Hipp"
+date: "10/9/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Set libraries:
+```{r, message=FALSE}
+library("tidyverse")
+library("gtsummary")
+```
+
+Read in data:
+```{r, message=FALSE}
+df <- read_csv("../DataRaw/lead-iq-01.csv")
+```
+
+IQ levels by location status:
+```{r}
+df %>%
+  ggplot(aes(x = Smelter, y = IQ)) +
+  geom_boxplot() +
+  ggtitle("Figure 1: IQ levels by location status to lead smelter")
+```
+
+IQ summary statistics by location status:
+```{r}
+df %>%
+  tbl_summary(by = Smelter,
+              statistic = all_continuous() ~ "{mean} ({sd})"
+              ) %>%
+  modify_spanning_header(c("stat_1", "stat_2") ~ "**Location**") %>%
+  modify_header(label ~ "**Variable**") %>%
+  modify_caption("**Table 1. IQ Summary Statistics by Location Status**")
+```
+
+
+```{r include = FALSE}
+df.near <- df %>%
+  filter(Smelter == "Near")
+
+df.far <- df %>%
+  filter(Smelter == "Far")
+
+mean.near <- round(mean(df.near$IQ), 2)
+mean.far <- round(mean(df.far$IQ), 2)
+```
+
+Figure 1 shows the distribution of IQ values by location status to the lead smelter, while Table 1 shows summary statistics of IQ by location status. The mean IQ of subjects in the "near" group living within 1 mile of the lead smelter is `r mean.near`. The mean IQ of subjects in the "far" group living more than 1 mile from the lead smelter is `r mean.far`. 
+
+
